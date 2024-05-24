@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "dronesim"
+version = "0.1.0"
+description = ""
+authors = ["Pierriccardo Olivieri <pierriccardo.olivieri@polimi.it>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+numpy = "^1.26.4"
+matplotlib = "^3.9.0"
+tqdm = "^4.66.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
