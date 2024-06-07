@@ -21,6 +21,7 @@ def _legend_without_duplicate_labels(ax):
 def plot_position_error(
     reference: np.ndarray,
     trajectory: np.ndarray,
+    T:int,
     title: str = "Position Error",
     filename: str = "position_error",
     savepath: str = "imgs/",
@@ -45,7 +46,7 @@ def plot_position_error(
     titles = ["x", "y", "z"]
     labels = ["x[m]", "y[m]", "z[m]"]
 
-    x = np.cumsum(np.ones(conf.T) * conf.DT)
+    x = np.cumsum(np.ones(T) * conf.DT)
     for i, (subtitle, label) in enumerate(zip(titles, labels)):
         ax[i].plot(
             x,
@@ -89,6 +90,7 @@ def plot_position_error(
 def plot_velocity_error(
     reference: np.ndarray,
     trajectory: np.ndarray,
+    T:int,
     title: str = "Velocity error",
     filename: str = "velocity_error",
     savepath: str = "imgs/",
@@ -113,7 +115,7 @@ def plot_velocity_error(
     titles = ["x", "y", "z"]
     labels = ["x[m]", "y[m]", "z[m]"]
 
-    x = np.cumsum(np.ones(conf.T) * conf.DT)
+    x = np.cumsum(np.ones(T) * conf.DT)
     for i, (subtitle, label) in enumerate(zip(titles, labels)):
         ax[i].plot(
             x,
