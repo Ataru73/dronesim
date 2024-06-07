@@ -15,9 +15,9 @@ class Controller:
         self.obstacles = obstacles
         self.position_controller = PositionController()
 
-    def step(self, reference: np.ndarray):
+    def step(self, reference: np.ndarray, obstacles: np.ndarray):
 
-        F_oa = obstacle_avoidance(self.drone.state(), self.obstacles, conf.l)
+        F_oa = obstacle_avoidance(self.drone.state(), obstacles, conf.l)
         tmp = reference.copy()
         tmp[:3] += F_oa
         _input = self.position_controller.step(self.drone.state(), tmp)

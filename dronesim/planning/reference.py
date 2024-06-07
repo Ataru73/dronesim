@@ -18,8 +18,8 @@ def get_reference_trajectory(offset: np.ndarray = np.array([0, 0, 0])) -> np.nda
         reference trajectory
     """
 
-    ref = np.zeros((conf.T, 4))
-    for t in range(conf.T):
+    ref = np.zeros((T, 4))
+    for t in range(T):
         ref[t, :] += np.array([t, 0, 0, 0])
         ref[t, :3] += offset
     return ref
@@ -111,19 +111,19 @@ def waypoints2timebased(points: np.ndarray, space: float = 0.1, steps: int = Non
     return np.array(timebased)
 
 
-def get_offseted_references(reference: np.ndarray, n_drones: int, offsets: np.ndarray):
-    assert reference.shape[0] == conf.T, print(
-        f"Provided reference has incorrect shape {reference.shape}, num of steps is {conf.T}"
+def get_offseted_references(reference: np.ndarray, n_drones: int, offsets: np.ndarray, T: int):
+    assert reference.shape[0] == T, print(
+        f"Provided reference has incorrect shape {reference.shape}, num of steps is {T}"
     )
 
-    ref = np.zeros((n_drones, conf.T, conf.Nx))
+    ref = np.zeros((n_drones, T, conf.Nx))
 
     for d in range(n_drones):
-        for i, t in enumerate(range(conf.T)):
+        for i, t in enumerate(range(T)):
             ref[d, i, :] += np.hstack(
                 (reference[i], np.zeros(3), np.zeros(3), np.zeros(3))
             )
             ref[d, i, :3] += offsets[d]
-        for i in range(conf.T - 1):
+        for i in range(T - 1):
             ref[d, i, 3:6] = (ref[d, i + 1, :3] - ref[d, i, :3]) / conf.DT
     return ref
