@@ -123,7 +123,7 @@ def get_offseted_references(reference: np.ndarray, n_drones: int, offsets: np.nd
             ref[d, i, :] += np.hstack(
                 (reference[i], np.zeros(3), np.zeros(3), np.zeros(3))
             )
-            ref[d, i, :3] += offsets[d]
+            ref[d, i, :3] += offsets[3*d:3*d+3]
         for i in range(T - 1):
             ref[d, i, 3:6] = (ref[d, i + 1, :3] - ref[d, i, :3]) / conf.DT
     return ref
