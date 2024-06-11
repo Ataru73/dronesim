@@ -159,18 +159,22 @@ def plot_velocity_error(
 def plot_trajectories(
     references,
     trajectories,
+    plane,
+    missile,
     obstacles: list = [],
     drone_radius=0.1,
     elev=30,
     azim=-60,
-    x_bound=(10, 10),
-    y_bound=(10, 10),
-    z_bound=(10, 10),
     filename="trajectory",
     savepath="imgs",
     show: bool = False,
     pause: int = 10,
 ):
+    import os
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+
     os.makedirs(savepath, exist_ok=True)
 
     n_drones, T, Nx = references.shape
@@ -192,18 +196,19 @@ def plot_trajectories(
     ax.set_ylabel("Y")
     ax.set_zlabel("Z")
     ax.set_title("Quadcopter Simulation")
-    ax.set_aspect("equal", adjustable="box")
+    ax.set_box_aspect([1,1,1])  # Equal aspect ratio
 
-    # ax.axes.set_xlim3d(*x_bound)
-    # ax.axes.set_ylim3d(*y_bound)
-    # ax.axes.set_zlim3d(*z_bound)
+    ax.axes.set_xlim3d(*(0,(np.max(plane[0])+(np.max(plane[0])/3))))
+    ax.axes.set_ylim3d(*(0,(np.max(plane[1])+(np.max(plane[1])/3))))
+    ax.axes.set_zlim3d(*(0,(np.max(plane[2])+(np.max(plane[2])/3))))
+
 
     for d in range(n_drones):
         ax.plot(
             references[d, :, 0],
             references[d, :, 1],
             references[d, :, 2],
-            color=conf.colors["reference"],
+            color='blue',  # Example color for reference
             linestyle="--",
             linewidth=0.5,
             label=f"reference {d}",
@@ -216,14 +221,14 @@ def plot_trajectories(
         U, Z = np.meshgrid(u, z)
         X = radius * np.cos(U) + ox
         Y = radius * np.sin(U) + oy
-        ax.plot_surface(X, Y, Z, color=conf.colors["obstacles"], alpha=0.7)
+        ax.plot_surface(X, Y, Z, color='orange', alpha=0.7)
 
     for d in range(n_drones):
         ax.plot(
             trajectories[d, :, 0],
             trajectories[d, :, 1],
             trajectories[d, :, 2],
-            color=conf.colors["drones"][d],
+            color=conf.colors["drones"][d],  # Example color for drone trajectory
             label=f"drone {d}",
         )
 
@@ -237,7 +242,7 @@ def plot_trajectories(
             terminal_state[0],
             terminal_state[1],
             terminal_state[2],
-            color=conf.colors["drones"][d],
+            color=conf.colors["drones"][d],  # Example color for drone
         )
 
         # Plot a sphere around the terminal state
@@ -246,12 +251,26 @@ def plot_trajectories(
         x = drone_radius * np.outer(np.cos(u), np.sin(v)) + terminal_state[0]
         y = drone_radius * np.outer(np.sin(u), np.sin(v)) + terminal_state[1]
         z = drone_radius * np.outer(np.ones(np.size(u)), np.cos(v)) + terminal_state[2]
-        ax.plot_surface(x, y, z, color=conf.colors["drones"][d], alpha=0.3)
+        ax.plot_surface(x, y, z, color='green', alpha=0.3)
+
+    # Add another line (example)
+    ax.plot(plane[0], plane[1], plane[2], color='purple', label='Plane')
 
     ax.legend()
     ax.grid(True)
     style = {
-        "linewidth": 0.5,
+        "linewidth": 1,
+        "linestyle": "--",
+    }
+    ax.xaxis._axinfo["grid"].update(style)
+    ax.yaxis._axinfo["grid"].update(style)
+    ax.zaxis._axinfo["grid"].update(style)
+    ax.plot(missile[0], missile[1], missile[2], color='yellow', label='Missile')
+
+    ax.legend()
+    ax.grid(True)
+    style = {
+        "linewidth": 1,
         "linestyle": "--",
     }
     ax.xaxis._axinfo["grid"].update(style)
@@ -266,6 +285,7 @@ def plot_trajectories(
     plt.close("all")
 
 
+
 def generate_animation(
     trajectories: np.ndarray,
     obstacles: np.ndarray,
@@ -276,9 +296,6 @@ def generate_animation(
     filename: str = "simulation.gif",
     savepath: str = "imgs/",
     skip_frames: int = 10,
-    x_lim=(-2, 20),
-    y_lim=(-2, 20),
-    z_lim=(0, 20),
 ) -> None:
     """
     Generates a short video of the drones' flight simulation.
@@ -289,9 +306,6 @@ def generate_animation(
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
     ax.set_zlabel("Z")
-    ax.set_xlim3d(x_lim)
-    ax.set_ylim3d(y_lim)
-    ax.set_zlim3d(z_lim)
     ax.view_init(elev=elev, azim=azim)
     ax.grid(True)
     style = {
