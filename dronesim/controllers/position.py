@@ -48,6 +48,7 @@ def pitch_roll_yaw_to_xyz(pitch, roll, yaw):
 
 class NonlinearController:
     def __init__(self) -> None:
+        coeff=0.15
 
         # acceleration PD gains
         self.kphi1 = 0.1
@@ -63,9 +64,9 @@ class NonlinearController:
         self.prev_T_d = 0
 
         # position PD gains
-        self.kx1 = 10
-        self.ky1 = 10
-        self.kz1 = 10
+        self.kx1 = 10*coeff
+        self.ky1 = 10*coeff
+        self.kz1 = 10*coeff
         self.kx2 = 5
         self.ky2 = 5
         self.kz2 = 5
@@ -167,6 +168,10 @@ class NonlinearController:
         ax_d = self.kx1 * (x_d - x) + self.kx2 * (dx_d - dx)
         ay_d = self.ky1 * (y_d - y) + self.ky2 * (dy_d - dy)
         az_d = self.kz1 * (z_d - z) + self.kz2 * (dz_d - dz)
+
+        if np.abs(ax_d)>20: ax_d=np.sign(ax_d)*20
+        if np.abs(ay_d)>20: ay_d=np.sign(ay_d)*20
+        if np.abs(az_d)>20: az_d=np.sign(az_d)*20
 
         self.prev_x_d = x_d
         self.prev_y_d = y_d
