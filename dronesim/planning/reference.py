@@ -25,35 +25,6 @@ def get_reference_trajectory(offset: np.ndarray = np.array([0, 0, 0])) -> np.nda
     return ref
 
 
-def equally_spaced_points(
-    start: np.ndarray, end: np.ndarray, space: float
-) -> np.ndarray:
-    """Given start and end positions generates an array of equally-spaced points along the line.
-
-    Parameters
-    ----------
-    start : np.ndarray
-        Start point
-    end : np.ndarray
-        End point
-    space : float
-        Spacing of each point
-
-    Returns
-    -------
-    np.ndarray
-        Array containing the generated points
-    """
-    points = []
-    dist = np.linalg.norm(end - start)
-    n_points = int(np.ceil(dist / space))
-    if n_points > 1:
-        step = dist / (n_points - 1)
-        for i in range(n_points):
-            points.append(steer(start, end, i * step))
-    return points
-
-
 def steer(start: np.ndarray, end: np.ndarray, d: float):
     """Return a point in the direction of the goal, that is distance away from start
 
@@ -76,6 +47,33 @@ def steer(start: np.ndarray, end: np.ndarray, d: float):
     steered_point = start + u * d
     return steered_point
 
+def equally_spaced_points(
+    start: np.ndarray, end: np.ndarray, space: float, steps:int
+) -> np.ndarray:
+    """Given start and end positions generates an array of equally-spaced points along the line.
+
+    Parameters
+    ----------
+    start : np.ndarray
+        Start point
+    end : np.ndarray
+        End point
+    space : float
+        Spacing of each point
+
+    Returns
+    -------
+    np.ndarray
+        Array containing the generated points
+    """
+    points = []
+    dist = np.linalg.norm(end - start)
+    n_points = int(np.ceil(dist / space))
+    if n_points > 1:
+        step = dist / (n_points - 1)
+        for i in range(steps):
+            points.append(steer(start, end, i * step))
+    return points
 
 def waypoints2timebased(points: np.ndarray, space: float = 0.1, steps: int = None):
     """Given a set of waypoints return a timebased trajectory of equally
@@ -107,7 +105,7 @@ def waypoints2timebased(points: np.ndarray, space: float = 0.1, steps: int = Non
 
     timebased = []
     for p in range(len(points) - 1):
-        timebased += equally_spaced_points(points[p], points[p + 1], space)
+        timebased += equally_spaced_points(points[p], points[p + 1], space,steps)
     return np.array(timebased)
 
 
