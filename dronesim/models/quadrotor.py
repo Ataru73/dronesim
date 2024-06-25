@@ -13,7 +13,7 @@ class Quadrotor:
     - https://wilselby.com/research/arducopter/modeling/
     """
 
-    def __init__(self, x: float, y: float, z: float) -> None:
+    def __init__(self, x: float, y: float, z: float, dx: float = 0.0, dy: float = 0.0, dz: float = 0.0) -> None:
         """Initialize the drone and its paramters
 
         Parameters
@@ -33,9 +33,9 @@ class Quadrotor:
         self.x = x  # x position
         self.y = y  # y position
         self.z = z  # z position
-        self.dx = 0.0  # linear velocities x-axis
-        self.dy = 0.0  # linear velocities y-axis
-        self.dz = 0.0  # linear velocities z-axis
+        self.dx = dx  # linear velocities x-axis
+        self.dy = dy  # linear velocities y-axis
+        self.dz = dz  # linear velocities z-axis
         self.phi = 0.0  # roll
         self.theta = 0.0  # pitch
         self.psi = 0.0  # yaw
