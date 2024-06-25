@@ -48,7 +48,7 @@ def pitch_roll_yaw_to_xyz(pitch, roll, yaw):
 
 class NonlinearController:
     def __init__(self) -> None:
-        coeff=0.13
+        coeff=1.0
 
         # acceleration PD gains
         self.kphi1 = 0.1
